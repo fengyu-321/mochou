@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        {
+            let data = (a=0,b=1) => ({a:a,b:b});
+            console.log(data(8,8));
+            console.log(data());
+            let o = () => this;
+            function a(params) {
+                (function b(){
+                console.log("this:",this);
+            })()}
+            a()
+            console.log(o());
+        }
+        {
+            var handler = {
+  id: '123456',
+
+  init: function() {
+    document.addEventListener('click',
+      event => this.doSomething(event.type), false);
+  },
+
+  doSomething: function(type) {
+    console.log('Handling ' + type  + ' for ' + this.id);
+  }
+};
+        }
+    </script>
+</body>
+</html>
