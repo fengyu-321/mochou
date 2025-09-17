@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
-    <title>Hello World</title> 
+    <title>单HTML测试</title> 
     <!-- 远程引入Vue3和TypeScript相关依赖 --> 
     <script src="vue.global.js"></script>  
     <script src="https://cdn.tailwindcss.com"></script>  
@@ -11,6 +11,7 @@
         <h1>Hello World</h1> 
         <!-- 模板语法绑定当前时间 --> 
         <p class="text-xl text-blue-600 mt-4">当前时间：{{ currentTime }}</p> 
+        <img src="photo.png"/>
     </div>
     <script> 
         // 使用Vue3的createApp创建应用 
@@ -47,4 +48,42 @@
         }).mount('#app'); 
     </script> 
 </body> 
-</html> 
+</html> <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        {
+            let data = (a=0,b=1) => ({a:a,b:b});
+            console.log(data(8,8));
+            console.log(data());
+            let o = () => this;
+            function a(params) {
+                (function b(){
+                console.log("this:",this);
+            })()}
+            a()
+            console.log(o());
+        }
+        {
+            var handler = {
+  id: '123456',
+
+  init: function() {
+    document.addEventListener('click',
+      event => this.doSomething(event.type), false);
+  },
+
+  doSomething: function(type) {
+    console.log('Handling ' + type  + ' for ' + this.id);
+  }
+};
+        } 
+    </script>
+</body>
+</html>
