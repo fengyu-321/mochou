@@ -16,11 +16,13 @@
     </div> 
  
     <script> 
-        // 使用Vue3的createApp创建应用 
-        const { createApp, ref, onMounted } = Vue; 
- 
         createApp({ 
             setup() { 
+                // 初始化时间并设置定时器更新 
+                onMounted(() => { 
+                  // 使用Vue3的createApp创建应用 
+        const { createApp, ref, onMounted } = Vue; 
+ 
                 // 响应式变量存储当前时间 
                 const currentTime = ref(''); 
  
@@ -34,9 +36,6 @@
                     const seconds = String(date.getSeconds()).padStart(2,  '0'); 
                     return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`; 
                 }; 
- 
-                // 初始化时间并设置定时器更新 
-                onMounted(() => { 
                     // 初始赋值 
                     currentTime.value  = formatTime(new Date()); 
                     // 每秒更新一次（可根据需求调整频率） 
