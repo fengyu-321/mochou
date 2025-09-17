@@ -1,4 +1,53 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Hello World</title> 
+    <!-- 远程引入Vue3和TypeScript相关依赖 --> 
+    <script src="vue.global.js"></script>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+</head> 
+<body> 
+    <div id="app"> 
+        <h1>Hello World</h1> 
+        <!-- 模板语法绑定当前时间 --> 
+        <p class="text-xl text-blue-600 mt-4">当前时间：{{ currentTime }}</p> 
+    </div>
+    <script> 
+        // 使用Vue3的createApp创建应用 
+        const { createApp, ref, onMounted } = Vue; 
+ 
+        createApp({ 
+            setup() { 
+                // 响应式变量存储当前时间 
+                const currentTime = ref(''); 
+ 
+                // 格式化时间函数（YYYY年MM月DD日 HH:MM:SS） 
+                const formatTime = (date) => { 
+                    const year = date.getFullYear();  
+                    const month = String(date.getMonth()  + 1).padStart(2, '0'); 
+                    const day = String(date.getDate()).padStart(2,  '0'); 
+                    const hours = String(date.getHours()).padStart(2,  '0'); 
+                    const minutes = String(date.getMinutes()).padStart(2,  '0'); 
+                    const seconds = String(date.getSeconds()).padStart(2,  '0'); 
+                    return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`; 
+                }; 
+ 
+                // 初始化时间并设置定时器更新 
+                onMounted(() => { 
+                    // 初始赋值 
+                    currentTime.value  = formatTime(new Date()); 
+                    // 每秒更新一次（可根据需求调整频率） 
+                    setInterval(() => { 
+                        currentTime.value  = formatTime(new Date()); 
+                    }, 1000); 
+                }); 
+ 
+                return { currentTime }; 
+            } 
+        }).mount('#app'); 
+    </script> 
+</body> 
+</html> <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
