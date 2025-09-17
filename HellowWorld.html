@@ -1,207 +1,51 @@
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moolsnet第三方对接数据加密示例</title>
-    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
-  <script src="vue.global.js"></script>  
-    <script src="https://unpkg.com/element-plus@1.0.2-beta.46/lib/index.full.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/qs/6.9.6/qs.min.js"
-        type="application/javascript"></script>
-    <!-- 引入加密文件（这个必须引入） -->
-    <script src="https://www.mools.net/lims/web/common/js/crypto-js.js"></script>
-</head>
-<style>
-    span{
-        display: inline-block;
-    }
-    div {
-        height: 30px;
-        line-height: 30px;
-    }
-    .left{
-        float: left;
-    }
-    .input-el{
-        height: 50px;
-        line-height: 50px;
-    }
-</style>
-<body>
-    <div style="width:100%;" id="app">
-        <div style="width:80%;margin:0 auto;height:200px">
-            <div>
-                <h1>加密参数</h1>
-            </div>
-            <br>
-            <div>
-                <span>key(16位)：</span><span><el-input v-model="key" placeholder="请输入加密key" style="width:1000px;"></el-input></span>
-            </div>
-            <div>
-                <span>i&nbsp;&nbsp;&nbsp;v(16位)：</span><span><el-input v-model="iv" placeholder="请输入加密iv" style="width:1000px;"></el-input></span>
-            </div>
-        </div>
-        <div style="width:80%;margin:0 auto;">
-            <!-- 前端加密 -->
-            <div>
-                <div>
-                    <h1>前端加密,加密值必须是json</h1>
-                </div>
-                <br>
-                <!-- textarea -->
-                <div>
-                    <el-input type="textarea" rows="10" placeholder="请输入要加密的json" size="medium" v-model="jia_json" maxlength="100000" style="width:500px;" >
-                    </el-input>
-                </div>
-                <!-- 按钮 -->
-                <div style="margin-left:15px;margin-right:15px;">
-                    <el-button type="primary" @click="enCode">前端加密</el-button>
-                </div>
-                <!-- textarea -->
-                <div>
-                    <el-input type="textarea" rows="10" placeholder="请输入内容" size="medium" v-model="jia_value" maxlength="500000" style="width:500px;" >
-                    </el-input>
-                </div>
-            </div>
-            <br><br><br>
-            <br><br><br><br><br><br>
-            <!-- 后端 解密 -->
-            <div>
-                <div>
-                    <h1>后端解密</h1>
-                </div>
-                <br>
-                <!-- textarea -->
-                <div>
-                    <el-input type="textarea" rows="10" placeholder="请输入要解密的字符串" size="medium" v-model="jie_str" style="width:500px;" maxlength="500000" >
-                    </el-input>
-                </div>
-                <!-- 按钮 -->
-                <div style="margin-left:15px;margin-right:15px;">
-                    <el-button type="primary" @click="deCode()">后端解密</el-button>
-                </div>
-                <!-- textarea -->
-                <div>
-                    <el-input type="textarea" rows="10" placeholder="请输入内容" size="medium" v-model="jie_value" style="width:500px;" maxlength="100000" >
-                    </el-input>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-<script>
-    Object.assign(window, Vue);
-    const vue3Composition = {
-        setup() {
-            const data = reactive({
-                // 加密的json
-                jia_json:"{'name':1,'class_id':2}",
-                // 加密得到的字符串
-                jia_value:'',
-                // 解密字符串
-                jie_str:'',
-                // 解密得到的值
-                jie_value: '',
-                // 加密key
-                key:'',
-                // 加密iv
-                iv:'',
-            });
-            
-            /**
-             * @name: 加密
-             * @author: camellia
-             * @email: guanchao_gc@qq.com
-             * @date: 2021-08-19
-             */
-            const enCode = () => {
-                // 加密所需的秘钥以及偏移字符串，后期我们会为您提供，以下两个字符串仅供测试使用，不可用于正式环境
-                // const key = '1234567887654321';
-                // const iv = '1234567887654321';
-                if(data.key == '' || data.iv == '')
-                {
-                    ElementPlus.ElMessage({
-                        showClose: true,
-                        message: '请填写加密参数',
-                        type: 'warning'
-                    }); return;
-                }
-                // 调用加密方法
-                data.jia_value = encryptCode(data.jia_json, data.key, data.iv);
-            }
-            /**
-             * @name:crypto-js 加密
-             * @author: camellia
-             * @email: guanchao_gc@qq.com
-             * @date: 2021-08-19
-             * @param: param json 要加密的值（必须是json）
-             * @param: key string 加密秘钥  16位字符串
-             * @param: iv string 加密偏移量  16位字符串
-             */
-            const encryptCode = (param,key,iv) => {
-                // json转json字符串
-                var text = JSON.stringify(param);
-                // 加载秘钥
-                var key = CryptoJS.enc.Latin1.parse(key); 
-                // 加载偏移量
-                var iv = CryptoJS.enc.Latin1.parse(iv); 
-                // 加密
-                var encrypted = CryptoJS.AES.encrypt(text, key, {
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.ZeroPadding
-                }).toString();
-                return encrypted;
-            };
-            /**
-             * @name: 后端解密
-             * @author: camellia
-             * @email: guanchao_gc@qq.com
-             * @date: 2021-08-19 
-             * @param: data type description
-             * @return: data type description
-             */
-            const deCode = () => {
-                if(data.key == '' || data.iv == '')
-                {
-                    ElementPlus.ElMessage({
-                        showClose: true,
-                        message: '请填写加密参数',
-                        type: 'warning'
-                    }); return;
-                }
-                var param = data.jie_str;
-                var postData = Qs.stringify({
-                    params: param,
-                    key: data.key,
-                    iv: data.iv
-                });
-                
-                axios.post("https://dlut.mools.net/jiemi.php", postData )
-                    .then(response => {
-                        data.jie_value = response.data;
-                    })
-                    .catch(error => {
-                        // console.log(error);
-                    });
-            }
-            /**
-             * @name: 将data绑定值dataRef
-             * @author: camellia
-             * @email: guanchao_gc@qq.com
-             * @date: 2021-08-19
-             */
-            const dataRef = toRefs(data);
-            return {
-                deCode,
-                enCode,
-                ...dataRef
-            }
-        },
-    }
-    // ElementPlus.locale(ElementPlus.lang.zhCn);
-    const app = createApp(vue3Composition).use(ElementPlus).mount("#app");
-</script>
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Hello World</title> 
+    <!-- 远程引入Vue3和TypeScript相关依赖 --> 
+    <script src="vue.global.js"></script>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+</head> 
+<body> 
+    <div id="app"> 
+        <h1>Hello World</h1> 
+        <!-- 模板语法绑定当前时间 --> 
+        <p class="text-xl text-blue-600 mt-4">当前时间：{{ currentTime }}</p> 
+    </div> 
+ 
+    <script> 
+        // 使用Vue3的createApp创建应用 
+        const { createApp, ref, onMounted } = Vue; 
+ 
+        createApp({ 
+            setup() { 
+                // 响应式变量存储当前时间 
+                const currentTime = ref(''); 
+ 
+                // 格式化时间函数（YYYY年MM月DD日 HH:MM:SS） 
+                const formatTime = (date) => { 
+                    const year = date.getFullYear();  
+                    const month = String(date.getMonth()  + 1).padStart(2, '0'); 
+                    const day = String(date.getDate()).padStart(2,  '0'); 
+                    const hours = String(date.getHours()).padStart(2,  '0'); 
+                    const minutes = String(date.getMinutes()).padStart(2,  '0'); 
+                    const seconds = String(date.getSeconds()).padStart(2,  '0'); 
+                    return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`; 
+                }; 
+ 
+                // 初始化时间并设置定时器更新 
+                onMounted(() => { 
+                    // 初始赋值 
+                    currentTime.value  = formatTime(new Date()); 
+                    // 每秒更新一次（可根据需求调整频率） 
+                    setInterval(() => { 
+                        currentTime.value  = formatTime(new Date()); 
+                    }, 1000); 
+                }); 
+ 
+                return { currentTime }; 
+            } 
+        }).mount('#app'); 
+    </script> 
+</body> 
+</html> 
